@@ -46,7 +46,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Script\Grid.cs" />
+     <Compile Include="Assets\CurrentScript\Grid.cs" />
+     <Compile Include="Assets\CurrentScript\GridSystem.cs" />
+     <Compile Include="Assets\Script\Board.cs" />
+     <Compile Include="Assets\Script\Club.cs" />
+     <Compile Include="Assets\Script\Diamond.cs" />
+     <Compile Include="Assets\Script\Heart.cs" />
+     <Compile Include="Assets\Script\ListOfTiles.cs" />
+     <Compile Include="Assets\Script\Spade.cs" />
+     <Compile Include="Assets\Script\Tile.cs" />
+     <Compile Include="Assets\Script\TileClick.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>E:/Game Makers/Unity 5.6/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
