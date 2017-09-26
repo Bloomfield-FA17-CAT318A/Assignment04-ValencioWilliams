@@ -14,6 +14,10 @@ public class Grid : MonoBehaviour
 
 	;
 
+	public Gems gem;
+
+	public int numOfGems;
+
 	public int rows;
 
 	public int columns;
@@ -22,25 +26,13 @@ public class Grid : MonoBehaviour
 
 	public GameObject[] gemObjects = new GameObject[4];
 
-	//	public Grid (int row, int col)
-	//	{
-	//		rows = row;
-	//		columns = col;
-	//		gemList = new int[row, col];
-	//		gemObjects = new List<GameObject> ();
-	//
-	//		gemObjects.Add (red);
-	//		gemObjects.Add (blue);
-	//		gemObjects.Add (green);
-	//		gemObjects.Add (yellow);
-	//
-	//
-	//
-	//	}
+	public int count = 0;
 
 	public void Initializer (int row, int col)
 	{	
 		//which takes the number of columns and rows
+
+		numOfGems = System.Enum.GetValues (typeof(Gems)).Length;
 		rows = row;
 		columns = col;
 		gemList = new int[row, col];
@@ -52,25 +44,26 @@ public class Grid : MonoBehaviour
 		{
 			for (int k = 0; k < columns; k++)
 			{
-				gemList [i, k] = Random.Range (0, 4);
-
+				gemList [i, k] = Random.Range (0, numOfGems);
+				
 			}
 		}
-
-				
 		//Handles filling in random fruit
-
 	}
 
-	public void ReadList ()
+	public void RePopulate ()
 	{
 		for (int i = 0; i < rows; i++)
 		{
 			for (int k = 0; k < columns; k++)
 			{
-				Debug.Log ("Gemlist Column " + i + " Row " + k + ": " + gemList [i, k]);
+				if (gemList [i, k] == -1)
+				{
+					gemList [i, k] = Random.Range (0, numOfGems);
+				}
 			}
 		}
+		//Handles filling in random fruit
 	}
 
 	public void Render ()
@@ -85,7 +78,7 @@ public class Grid : MonoBehaviour
 					{
 						GameObject obj = Instantiate (gemObjects [l], new Vector3 (i, k, 0), Quaternion.identity, transform);
 
-						obj.tag = "Fruit";					
+						obj.tag = "Fruit";	
 					}
 
 				}
@@ -111,11 +104,7 @@ public class Grid : MonoBehaviour
 			{
 				if (hit.transform.tag == "Fruit")
 				{
-					Debug.Log ("You hit the " + hit.collider.name + " fruit" +
-					" at " + hit.collider.gameObject.transform.position.x + "," + hit.collider.gameObject.transform.position.y);
-
 					Destroy (hit.collider.gameObject);
-
 					gemList [(int)hit.collider.gameObject.transform.position.x, (int)hit.collider.gameObject.transform.position.y] = -1;
 
 					return true;
@@ -136,36 +125,50 @@ public class Grid : MonoBehaviour
 			{
 				if (gemList [i, k] == -1)
 				{
-					Debug.Log ("The space at " + i + " , " + k + " is empty");
-					SlideDown (i , k);
+					count = 0;
+					SlideDown (i, k);
+
 				}
 			}
 		}
+
 	}
 
-	void SlideDown (int row, int col)
+	void SlideDown (int emptyRow, int emptyCol)
 	{
-		Vector3 replacement = new Vector3 (row, col + 1, 0);
+		DeRender ();
 
-		for (int i = 0; i < rows; i++)
+		for (int start = emptyCol; start < gemList.GetLength (0) - 1; start++)
 		{
-			for (int k = 0; k < columns; k++)
+			if (gemList [emptyRow, start] == -1)
 			{
-				for(int l = 0; l < gemObjects.Length; l++)
-				{
-					Debug.Log (gemObjects [l].transform.position);
-					if (gemObjects[l].transform.position == replacement)
-					{
-						Debug.Log ("DO IT ");
+				count++;
 
-						gemObjects [l].transform.position = new Vector3 (row, col);
-					}
-				}
 			}
+		}
+
+		for (int i = 0; i < count; i++)
+		{
+			Debug.Log ("Swapping!!!");
+
+			gemList [emptyRow, emptyCol] = gemList [emptyRow, emptyCol + 1];
+			gemList [emptyRow, emptyCol + 1] = -1;
+
 
 		}
+	
 		//Pass the grid location to slide the items down, setting the top empty value to a fruit number.
-
 	}
+
+	void DeRender ()
+	{
+		GameObject[] objs = GameObject.FindGameObjectsWithTag ("Fruit");
+
+		foreach (GameObject obj in objs)
+		{
+			Destroy (obj);
+		}
+	}
+
 
 }
